@@ -5,11 +5,59 @@
     <meta charset="UTF-8" />
 
     <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/library.css">  
+    <link rel="stylesheet" href="css/library.css">
+    
+    <!-- Google Fonts Lato-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,100&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
+    <div id = 'library-flex'>
+
+        
+    </div>
+
+
+    <!-- This is a card I worked on on my phone while at work, this is what I want the JS to create from scratch-->
+    <div class='card'>
+        <div class='hero'></div>
+        <div class="bottom">
+         <div class ='book-title book-info'>
+           The Martian
+         </div>
+     
+         <div class="author book-info">Andy Weir</div>
+         
+         <div class="desc">
+     After a dust storm nearly kills him and forces his crew to evacuate while thinking him dead, Mark finds himself stranded and completely alone with no way to even signal Earth that he’s alive</div>
+         
+         <div class='category book-info'>
+           <div class="info-left">
+             <div class='fic'>Fiction</div>
+             <div class="genre">Sci-fi</div>
+           </div>
+           <div class="pages">400 pages</div>
+         </div>
+         <div class="card-footer">
+           <div>
+             <button class="read btn" value="read">
+                <img src="media/book_black_24dp.svg">
+                <div>Read</div>
+             </button>
+             </div>
+           <div>
+             <button class="delete btn" value = "save">
+               <img src="media/delete_outline_black_24dp.svg">
+               Delete
+             </button>
+           </div>
+         </div>
+        </div>
+       </div>
 
     <script src="scripts/library.js"></script>
 </body>

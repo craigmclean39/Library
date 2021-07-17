@@ -1,0 +1,165 @@
+:root {
+  
+    --bg-color: #EAE9EA;
+    --attention-color: #FDE24A;
+    
+    --button-dark-color: #226B8E;
+    --button-light-color: #529CC1;
+    
+    --highlight-dark-color: #B80F14;
+    --highlight-light-color: #E42B31;
+    
+    --footer-dark-color: #353639;
+    --footer-light-color: #54514A;
+    
+  }
+  
+  html{
+    font-size: 62.5%;
+    background-color: var(--bg-color);
+  }
+  
+  body {
+      font-size: 1.6rem;
+      font-family: 'Lato', sans-serif;
+  }
+
+  #library-flex {
+      display: flex;
+  }
+  
+  .card {
+    width: 80vw;
+    height: auto;
+    border-radius: 1rem;
+    
+    box-shadow: rgba(149, 157, 165, 0.2) 0px .8rem 2.4rem;
+  }
+  
+  .hero {
+    height:40vh;
+    
+    background-color: var(--highlight-light-color);
+    
+    background-image: url("../media/9780804139021.jpeg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    
+    
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    }
+    
+    .arrows{
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .arrow-img{
+      width: 5rem;
+      height: rem;
+    }
+    
+    .bottom{
+      height: auto;
+      background-color: white;
+      border-bottom-right-radius: 1rem;
+      border-bottom-left-radius: 1rem;
+      
+      display:flex;
+      flex-direction: column;
+      justify-content: space-between;
+      
+      border-top: solid 0.4rem var(--highlight-dark-color);
+    }
+    
+    
+   .info-flex{
+      display:flex;
+      flex-direction: column;
+      padding: 0.5rem;
+    }
+    
+    .book-info{
+      padding: .3rem 1rem .15rem 1rem;
+    }
+    
+    .book-title{
+      font-size: 3rem;
+      font-weight: bold;
+    }
+    
+    .category{
+      display: flex;
+      justify-content: space-between;
+      color: var(--highlight-dark-color);
+    }
+    
+    .info-left{
+      display:flex;
+      justify-content: flex-start;
+    }
+    
+    .desc {
+      padding: 2rem;
+      font-weight: 300;
+      font-style: italic;
+    }
+    
+    .fic{
+      padding-right: 1.3rem;
+    }
+    
+    .author {
+      padding-top: 0;
+      padding-right: 1.3rem;
+      padding-bottom: 0rem;
+    }
+    
+    .pages{
+      font-weight: normal;
+      font-style: italic;
+    }
+    
+    .card-footer{
+      height: auto;
+      background-color: var(--footer-dark-color);
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      
+      border-top: .4rem solid var(--footer-light-color);
+      
+      display:flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+  .btn{
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+    margin-top: .8rem;
+    margin-bottom: .8rem;
+    
+    padding: .4rem 1.5rem .4rem .4rem;
+    border-radius: .4rem;
+    border: none;
+    background-color: var(--attention-color);
+  }
+  
+  .delete{
+    background-color: var(--highlight-light-color);
+  }
+  
+  .save{
+      background-color: var(--button-light-color);
+  
+  }

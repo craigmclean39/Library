@@ -11,6 +11,8 @@
     
     --footer-dark-color: #353639;
     --footer-light-color: #54514A;
+
+    --button-read-color: #59A32B;
     
   }
   
@@ -28,12 +30,17 @@
       position: sticky;
       top: 0;
       height: 10vh;
-      background-color: black;
+      background-color: var(--footer-light-color);
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
   }
 
   #library-flex {
       display: flex;
       flex-direction: column;
+      flex-wrap: wrap;
   }
   
   .card {
@@ -101,6 +108,20 @@
       font-size: 3rem;
       font-weight: bold;
     }
+
+    .book-title-input {
+        font-weight: normal;
+        font-style: italic;
+        color: var(--footer-light-color);
+        border: none;
+        border-radius: 3rem;
+        background-color: var(--bg-color);
+        margin:  .3rem 1rem .15rem 1rem;
+    }
+
+    .book-title-input:focus {
+        outline:none;
+    }
     
     .category{
       display: flex;
@@ -164,9 +185,18 @@
     padding: .4rem 1.5rem .4rem .4rem;
     border-radius: .4rem;
     border: none;
+    
+  }
+
+  .unread{
+    visibility: visible;
     background-color: var(--attention-color);
   }
   
+  .read{
+    visibility: visible;
+    background-color: var(--button-read-color);
+  }
   .delete{
     background-color: var(--highlight-light-color);
   }
@@ -174,4 +204,11 @@
   .save{
       background-color: var(--button-light-color);
   
+  }
+
+  @media (min-width: 640px) {
+    #library-flex {
+        display: flex;
+        flex-direction: row;
+    }
   }

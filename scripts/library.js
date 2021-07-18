@@ -80,7 +80,7 @@ function GenerateCard(b){
     hero.className = 'hero';
     hero.style.backgroundImage = `url("${b.thumbnail}")`;
     newCard.appendChild(hero);
-    
+
 
     let bottom = document.createElement("div");
     bottom.className = "bottom";
@@ -123,9 +123,78 @@ function GenerateCard(b){
 
     bottom.appendChild(category);
 
+/*     <div class="card-footer">
+           <div>
+             <button class="read btn" value="read">
+                <img src="media/book_black_24dp.svg">
+                <div>Read</div>
+             </button>
+             </div>
+           <div>
+             <button class="delete btn" value = "save">
+               <img src="media/delete_outline_black_24dp.svg">
+               Delete
+             </button>
+           </div>
+         </div> */
+
+    let footer = document.createElement("div");
+    footer.className = "card-footer";
+
+    footer.appendChild(AddButton("READ"));
+    footer.appendChild(AddButton("DELETE"));
+
+
+    bottom.appendChild(footer);
     newCard.appendChild(bottom);
 
     return newCard;
+}
+
+
+
+//CREATE BUTTONS, type can be READ, DELETE, SAVE
+function AddButton(buttonType)
+{
+    returnButton = document.createElement("div");
+    btn = document.createElement("button");
+    img = document.createElement("img");
+    btnText = document.createElement("div");
+
+    switch(buttonType)
+    {
+        case "READ":
+            {
+                btn.className = "read btn";
+                btn.value  = "read";
+                img.src = "media/book_black_24dp.svg";
+                btnText.innerText = "Read";
+                break;
+            }
+        case "DELETE":
+            {
+                btn.className = "delete btn";
+                btn.value  = "delete";
+                img.src = "media/delete_outline_black_24dp.svg";
+                btnText.innerText = "Delete";
+                break;
+            }
+        case "SAVE":
+            {
+                btn.className = "save btn";
+                btn.value  = "save";
+                img.src = "media/save_black_24dp.svg";
+                btnText.innerText = "Save";
+                break;
+            }
+}
+
+    btn.appendChild(img);
+    btn.appendChild(btnText);
+    returnButton.appendChild(btn);
+
+    return returnButton;
+
 }
 
 
@@ -133,4 +202,6 @@ function GenerateCard(b){
 let theMartian = new Book("The Martian", "Andy Weir", 480, false, "Description", "Fiction", "media/9780804139021.jpeg");
 console.log(theMartian.info());
 
+libraryFlex.appendChild(GenerateCard(theMartian));
+libraryFlex.appendChild(GenerateCard(theMartian));
 libraryFlex.appendChild(GenerateCard(theMartian));

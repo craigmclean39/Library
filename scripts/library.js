@@ -3,10 +3,12 @@ let myLibrary = [];
 const libraryFlex = document.getElementById("library-flex");
 console.log(libraryFlex);
 
-let Book = function(title, author, pages, read, desc, category, thumbnail) {
+let Book = (function(){
+    let nextId = 0;
+
+    return function(title, author, pages, read, desc, category, thumbnail) {
 
     //console.log("in book constructor")
-
     this.title = title;
     this.author = author;
     this.pages = pages;
@@ -14,7 +16,10 @@ let Book = function(title, author, pages, read, desc, category, thumbnail) {
     this.desc = desc;
     this.thumbnail = thumbnail;
     this.category = category;
-}
+
+    this.id = nextId++;
+    };
+})();
 
 Book.prototype = {
 
@@ -32,45 +37,10 @@ Book.prototype = {
 Book.prototype.info = function(){
 
     //console.dir(this);
-    return `${this.title} by ${this.author}, ${this.pages} pages, ${this.readOrNotStr()}, ${this.desc}, ${this.category}, ${this.thumbnail}`;
+    return `${this.title} by ${this.author}, ${this.pages} pages, ${this.readOrNotStr()}, ${this.desc}, ${this.category}, ${this.thumbnail}, ${this.id}`;
 }
 
 //This function takes a Book object and generates a html card to be added to the dom
-{/* <div class='card'>
-        <div class='hero'></div>
-        <div class="bottom">
-         <div class ='book-title book-info'>
-           The Martian
-         </div>
-     
-         <div class="author book-info">Andy Weir</div>
-         
-         <div class="desc">
-     After a dust storm nearly kills him and forces his crew to evacuate while thinking him dead, Mark finds himself stranded and completely alone with no way to even signal Earth that he’s alive</div>
-         
-         <div class='category book-info'>
-           <div class="info-left">
-             <div class='fic'>Fiction</div>
-             <div class="genre">Sci-fi</div>
-           </div>
-           <div class="pages">400 pages</div>
-         </div>
-         <div class="card-footer">
-           <div>
-             <button class="read btn" value="read">
-                <img src="media/book_black_24dp.svg">
-                <div>Read</div>
-             </button>
-             </div>
-           <div>
-             <button class="delete btn" value = "save">
-               <img src="media/delete_outline_black_24dp.svg">
-               Delete
-             </button>
-           </div>
-         </div>
-        </div>
-       </div> */}
 function GenerateCard(b){
 
     let newCard = document.createElement("div");
@@ -122,21 +92,6 @@ function GenerateCard(b){
     category.appendChild(pages);
 
     bottom.appendChild(category);
-
-/*     <div class="card-footer">
-           <div>
-             <button class="read btn" value="read">
-                <img src="media/book_black_24dp.svg">
-                <div>Read</div>
-             </button>
-             </div>
-           <div>
-             <button class="delete btn" value = "save">
-               <img src="media/delete_outline_black_24dp.svg">
-               Delete
-             </button>
-           </div>
-         </div> */
 
     let footer = document.createElement("div");
     footer.className = "card-footer";
@@ -200,8 +155,10 @@ function AddButton(buttonType)
 
 //Some hardcoded books to default into the library
 let theMartian = new Book("The Martian", "Andy Weir", 480, false, "Description", "Fiction", "media/9780804139021.jpeg");
+let anathem = new Book("Anathem", "Neal Stephenson", 1008, false, "Description", "Fiction", "media/anathem.jpg");
+
 console.log(theMartian.info());
+console.log(anathem.info());
 
 libraryFlex.appendChild(GenerateCard(theMartian));
-libraryFlex.appendChild(GenerateCard(theMartian));
-libraryFlex.appendChild(GenerateCard(theMartian));
+libraryFlex.appendChild(GenerateCard(anathem));

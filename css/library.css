@@ -24,6 +24,13 @@
       font-family: 'Lato', sans-serif;
   }
 
+  #header {
+      position: sticky;
+      top: 0;
+      height: 10vh;
+      background-color: black;
+  }
+
   #library-flex {
       display: flex;
       flex-direction: column;

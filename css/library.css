@@ -26,10 +26,11 @@
 
   #library-flex {
       display: flex;
+      flex-direction: column;
   }
   
   .card {
-    width: 80vw;
+    width: 300px;
     height: auto;
     border-radius: 1rem;
     
@@ -39,7 +40,7 @@
   }
   
   .hero {
-    height:40vh;
+    height:300px;
     
     background-color: var(--highlight-light-color);
     
@@ -62,7 +63,7 @@
     
     .arrow-img{
       width: 5rem;
-      height: rem;
+      height: 1rem;
     }
     
     .bottom{
@@ -138,6 +139,8 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
+
+      margin-top: .5rem;
     }
     
   .btn{

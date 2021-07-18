@@ -1,7 +1,6 @@
 let myLibrary = [];
 
 const libraryFlex = document.getElementById("library-flex");
-console.log(libraryFlex);
 
 let Book = (function(){
     let nextId = 0;
@@ -40,52 +39,84 @@ Book.prototype.info = function(){
     return `${this.title} by ${this.author}, ${this.pages} pages, ${this.readOrNotStr()}, ${this.desc}, ${this.category}, ${this.thumbnail}, ${this.id}`;
 }
 
+function AddToLibrary(b){
+    myLibrary.push(b);
+    libraryFlex.appendChild(GenerateCard(b));
+}
+
+function DeleteFromLibraryEvent(evt) {
+
+    //console.dir(evt.currentTarget);
+    DeleteFromLibrary(evt.currentTarget.dataset.id);
+
+}
+
+function DeleteFromLibrary(id) {
+
+    //Remove from Library
+    for(let i = 0; i < myLibrary.length; i++)
+    {
+        if(myLibrary[i].id == id)
+        {
+            myLibrary.splice(i, 1);
+            break;
+        }
+    }
+
+    //Remove from Dom
+    let children = libraryFlex.children;
+    for(let i = 0; i < children.length; i++)
+    {
+        if(children[i].dataset.id == id)
+        {
+            libraryFlex.removeChild(children[i]);
+        }
+    }
+
+}
+
+function CreateDiv(className) {
+
+    let d = document.createElement("div");
+    d.className = className;
+    return d;
+}
+
 //This function takes a Book object and generates a html card to be added to the dom
 function GenerateCard(b){
 
-    let newCard = document.createElement("div");
-    newCard.className = 'card';
+    let newCard = CreateDiv("card");
+    newCard.dataset.id = b.id;
 
-    let hero = document.createElement("div");
-    hero.className = 'hero';
+    let hero = CreateDiv("hero");
     hero.style.backgroundImage = `url("${b.thumbnail}")`;
     newCard.appendChild(hero);
 
 
-    let bottom = document.createElement("div");
-    bottom.className = "bottom";
+    let bottom = CreateDiv("bottom");
 
-
-    let title = document.createElement("div");
-    title.className = "book-title book-info";
+    let title = CreateDiv("book-title book-info");
     title.innerText = b.title;
 
-    let author = document.createElement("div");
-    author.className = "author book-info";
+    let author = CreateDiv("author book-info");
     author.innerText = b.author;
 
-    let description = document.createElement("div");
-    description.className = "desc";
+    let description = CreateDiv("desc")
     description.innerText = b.desc;
 
     bottom.appendChild(title);
     bottom.appendChild(author);
     bottom.appendChild(description);
 
-    let category = document.createElement("div");
-    category.className = "category book-info";
+    let category = CreateDiv("category book-info")
+    let infoLeft = CreateDiv("info-left");
 
-    let infoLeft = document.createElement("div");
-    infoLeft.className = "info-left";
-
-    let genre = document.createElement("div");
-    genre.className = "genre";
+    let genre = CreateDiv("genre");
     genre.innerText = b.category;
 
     infoLeft.appendChild(genre);
 
-    let pages = document.createElement("div");
-    pages.className = "pages";
+    let pages = CreateDiv("pages");
     pages.innerText = b.pages + " pages";
     
     category.appendChild(infoLeft);
@@ -93,11 +124,10 @@ function GenerateCard(b){
 
     bottom.appendChild(category);
 
-    let footer = document.createElement("div");
-    footer.className = "card-footer";
+    let footer = CreateDiv("card-footer");
 
-    footer.appendChild(AddButton("READ"));
-    footer.appendChild(AddButton("DELETE"));
+    footer.appendChild(AddButton("READ", b.id));
+    footer.appendChild(AddButton("DELETE", b.id));
 
 
     bottom.appendChild(footer);
@@ -109,7 +139,7 @@ function GenerateCard(b){
 
 
 //CREATE BUTTONS, type can be READ, DELETE, SAVE
-function AddButton(buttonType)
+function AddButton(buttonType, newId)
 {
     returnButton = document.createElement("div");
     btn = document.createElement("button");
@@ -132,6 +162,8 @@ function AddButton(buttonType)
                 btn.value  = "delete";
                 img.src = "media/delete_outline_black_24dp.svg";
                 btnText.innerText = "Delete";
+
+                btn.addEventListener("click", DeleteFromLibraryEvent);
                 break;
             }
         case "SAVE":
@@ -146,6 +178,8 @@ function AddButton(buttonType)
 
     btn.appendChild(img);
     btn.appendChild(btnText);
+
+    btn.dataset.id = newId;
     returnButton.appendChild(btn);
 
     return returnButton;
@@ -157,8 +191,14 @@ function AddButton(buttonType)
 let theMartian = new Book("The Martian", "Andy Weir", 480, false, "Description", "Fiction", "media/9780804139021.jpeg");
 let anathem = new Book("Anathem", "Neal Stephenson", 1008, false, "Description", "Fiction", "media/anathem.jpg");
 
-console.log(theMartian.info());
-console.log(anathem.info());
+//console.log(theMartian.info());
+//console.log(anathem.info());
 
-libraryFlex.appendChild(GenerateCard(theMartian));
-libraryFlex.appendChild(GenerateCard(anathem));
+AddToLibrary(theMartian);
+AddToLibrary(anathem);
+
+console.dir(myLibrary);
+
+//DeleteFromLibrary(0);
+
+console.dir(myLibrary);

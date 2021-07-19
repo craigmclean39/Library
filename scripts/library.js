@@ -46,16 +46,45 @@ function SaveBook(evt)
 {
     console.dir(evt);
 
+    //check the element for all the info the user inputed
+    let usrTitle = "";
+    let usrAuthor = "";
+    let usrPages = 0;
+    let usrRead = false;
+    let usrDesc = "";
+    let usrCategory = "";
+
+
     let elmt = evt.target;
     while(elmt.className != "card")
     {
         elmt = elmt.parentElement;
-        console.log(elmt.className);
+        //console.log(elmt.className);
+    }
+    
+
+    usrTitle = elmt.getElementsByClassName("book-title-input")[0].value;
+    usrAuthor = elmt.getElementsByClassName("author-input")[0].value;
+    usrDesc = elmt.getElementsByClassName("desc-input")[0].value;
+    usrPages = elmt.getElementsByClassName("pages-input")[0].value;
+    usrCategory = elmt.getElementsByClassName("genre-input")[0].value;
+
+    //console.dir(elmt.getElementsByClassName("read")[0]);
+    if(elmt.getElementsByClassName("read")[0] != undefined)
+    {
+        usrRead = true;
     }
 
+
+
+
+    let b = new Book(usrTitle, usrAuthor, usrPages, usrRead, usrDesc, usrCategory, "");
+
+
+    //Remove the form element from the library
     libraryFlex.removeChild(elmt);
 
-    let b = new Book("TEST", "", 0, false, "", "", "");
+    //And add an actual book
     AddToLibrary(b);
 
     addInProgress = false;
@@ -119,7 +148,7 @@ function ToogleReadStatus(id) {
         {
             let btns = children[i].getElementsByClassName("btn");
 
-            console.dir(btns);
+            //console.dir(btns);
 
             for(let j = 0; j < btns.length; j++)
             {
@@ -142,13 +171,11 @@ function ToogleReadStatus(id) {
         }
     }
 
-    console.dir(myLibrary);
+    //console.dir(myLibrary);
 }
 
 function AddBookInput(evt)
 {
-    console.log("ADD");
-
     if(!addInProgress)
     {
         addInProgress = true;
@@ -157,6 +184,61 @@ function AddBookInput(evt)
 
         libraryFlex.lastChild.scrollIntoView();
     }
+}
+
+function DoSearch(evt)
+{
+
+    console.log("Search");
+    let elmt = evt.target;
+    while(elmt.className != "card")
+    {
+        elmt = elmt.parentElement;
+        //console.log(elmt.className);
+    }
+    
+    let usrTitle = elmt.getElementsByClassName("book-title-input")[0].value;
+
+    usrTitle = usrTitle.replace(/\s+/g, '+').toLowerCase();
+
+    console.log(usrTitle);
+
+    let URL = 'https://www.googleapis.com/books/v1/volumes?q=';
+
+    URL += usrTitle;
+
+    console.log(URL);
+
+    $.ajax({
+        url: URL.toString(),
+        dataType: 'json',
+        success: function(data) {
+
+            console.dir(data);
+            console.log(elmt);
+
+            FillForm(data, elmt);
+        }
+    })
+}
+
+function FillForm(data, elmt)
+{
+    //let inputs = //elmt.getElementsByTagName("input");
+    //console.dir(inputs);
+
+    //inputs[0].hasClas
+    let title = elmt.getElementsByClassName("book-title-input")[0];
+    let author = elmt.getElementsByClassName("author-input")[0];
+    let desc = elmt.getElementsByClassName("desc-input")[0];
+    let category = elmt.getElementsByClassName("genre-input")[0];
+    let pages = elmt.getElementsByClassName("pages-input")[0];
+
+    title.value = data.items[0].volumeInfo.title;
+    author.value = data.items[0].volumeInfo.authors[0];
+    desc.value = data.items[0].volumeInfo.description;
+    category.value = data.items[0].volumeInfo.categories[0];
+    pages.value = data.items[0].volumeInfo.pageCount;
 }
 
 function DeleteText(evt)
@@ -173,11 +255,27 @@ function CreateDiv(className) {
     return d;
 }
 
-function CreateInput(className){
+function CreateInput(labelText, className, isNumber){
+
+    let label = document.createElement("label");
+    label.className = "label-class";
+    label.innerText = labelText;
+    label.for = labelText;
     let d = document.createElement("input");
-    d.type = "text";
+    d.id = labelText;
+
+    if(!isNumber)
+    {
+        d.type = "text";
+    }
+    else{
+        d.type = "number";
+    }
+    
     d.className = className;
-    return d;
+
+    label.appendChild(d);
+    return label;
 }
 
 //This function takes a Book object and generates a html card to be added to the dom
@@ -186,57 +284,117 @@ function GenerateCard(b, isForm){
     let newCard = CreateDiv("card");
     newCard.dataset.id = b.id;
 
-    let hero = CreateDiv("hero");
-    hero.style.backgroundImage = `url("${b.thumbnail}")`;
-    newCard.appendChild(hero);
+    let hero = {};
+    if(!isForm)
+    {
+        
 
+        if(b.thumbnail != undefined && b.thumbnail != "")
+        {
+            hero = CreateDiv("hero");
+            hero.style.backgroundImage = `url("${b.thumbnail}")`;
+            newCard.appendChild(hero);
+        }
+        else
+        {
+            hero = CreateDiv("not-hero");
+            newCard.appendChild(hero);
+        }
+    }
+    else
+    {
+        hero = CreateDiv("not-hero");
+        newCard.appendChild(hero);
+    }
 
     let bottom = CreateDiv("bottom");
 
     let title = {};
+    let author = {};
+    let description = {};
     if(!isForm)
     {
         title = CreateDiv("book-title book-info");
         title.innerText = b.title;
 
+        author = CreateDiv("author book-info");
+        author.innerText = b.author;
+
+        description = CreateDiv("desc")
+        description.innerText = b.desc;
+
     }
     else
     {
-        title = CreateInput("book-title-input book-title book-info");
-        title.value = "Title..."
-        title.addEventListener("click", DeleteText);
+        title = CreateInput("Title", "input book-title-input", false);
+        //title.value = "Title...";
+        //title.addEventListener("click", DeleteText);
+
+
+        author = CreateInput("Author", "input author-input", false);
+        //author.value = "Author...";
+        //author.addEventListener("click", DeleteText);
+
+        description = CreateInput("Description", "input desc-input", false);
+        //description.value = "Description...";
+        //description.addEventListener("click", DeleteText);
+        
     }
     
-
-
-    
-    
-
-    let author = CreateDiv("author book-info");
-    author.innerText = b.author;
-
-    let description = CreateDiv("desc")
-    description.innerText = b.desc;
-
     bottom.appendChild(title);
     bottom.appendChild(author);
     bottom.appendChild(description);
 
+
+
     let category = CreateDiv("category book-info")
-    let infoLeft = CreateDiv("info-left");
 
-    let genre = CreateDiv("genre");
-    genre.innerText = b.category;
+    let genre = {};
+    let pages = {};
 
-    infoLeft.appendChild(genre);
+    if(!isForm)
+    {
+        genre = CreateDiv("genre");
+        genre.innerText = b.category;
+    }
+    else
+    {
+        genre = CreateInput("Genre", "input genre-input", false);
+        //genre.value = "Genre...";
+        //genre.addEventListener("click", DeleteText);
+    }
 
-    let pages = CreateDiv("pages");
-    pages.innerText = b.pages + " pages";
+
+    if(!isForm)
+    {
+        pages = CreateDiv("pages");
+        pages.innerText = b.pages + " pages";
+    }
+    else
+    {
+        pages = CreateInput("Num Pages", "input pages-input", true);
+        //pages.value = "Number of Pages";
+        //pages.addEventListener("click", DeleteText);
+    }
     
-    category.appendChild(infoLeft);
-    category.appendChild(pages);
+    
+    if(!isForm)
+    {
+        category.appendChild(genre);
+        category.appendChild(pages);
+        bottom.appendChild(category);
+    }
+    else{
+        bottom.appendChild(genre);
+        bottom.appendChild(pages);
+    }
 
-    bottom.appendChild(category);
+
+    //Add A Search Button for books api
+    if(isForm)
+    {
+        bottom.appendChild(AddButton("SEARCH", b.id));
+    }
 
     let footer = CreateDiv("card-footer");
 
@@ -324,6 +482,15 @@ function AddButton(buttonType, newId)
                 img.src = "media/library_add_black_24dp.svg";
                 btnText.innerText = "Add";
                 btn.addEventListener("click", AddBookInput);
+                break;
+            }
+            case "SEARCH":
+            {
+                btn.className = "search btn";
+                btn.value  = "search";
+                img.src = "media/search_black_24dp.svg";
+                btnText.innerText = "Search";
+                btn.addEventListener("click", DoSearch);
                 break;
             }
 }

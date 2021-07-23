@@ -29,7 +29,7 @@ body {
 #header {
     position: sticky;
     top: 0;
-    height: 50px;
+    height: 10rem;
     background-color: var(--footer-light-color);
     border-bottom: solid 0.5rem var(--footer-dark-color);
 
@@ -40,8 +40,13 @@ body {
 
 #title {
     color: white;
-    font-size: 2rem;
+    font-size: 3rem;
     padding: 1rem;
+}
+
+#signature {
+    color: var(--bg-color);
+    font-size: 1.5rem;
 }
 
 #library-flex {

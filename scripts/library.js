@@ -50,7 +50,7 @@ let globalBooksData = {};
 
 function SaveBook(evt)
 {
-    console.dir(evt);
+    //console.dir(evt);
 
     //check the element for all the info the user inputed
     let usrTitle = "";
@@ -206,7 +206,7 @@ function GetCard(evt)
 function DoSearch(evt)
 {
 
-    console.log("Search");
+    //console.log("Search");
     let elmt = evt.target;
     while(elmt.className != "card")
     {
@@ -227,15 +227,15 @@ function DoSearch(evt)
     let URL = 'https://www.googleapis.com/books/v1/volumes?q=';
     URL += searchInfo;
 
-    console.log(URL);
+    //console.log(URL);
 
     $.ajax({
         url: URL.toString(),
         dataType: 'json',
         success: function(data) {
 
-            console.dir(data);
-            console.log(elmt);
+            //console.dir(data);
+            //console.log(elmt);
 
             globalBooksData = data;
             FillForm(data.items[0], elmt);

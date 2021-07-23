@@ -42,6 +42,12 @@ Book.prototype.info = function(){
     return `${this.title} by ${this.author}, ${this.pages} pages, ${this.readOrNotStr()}, ${this.desc}, ${this.category}, ${this.thumbnail}, ${this.id}`;
 }
 
+
+//This is a hack to pass the thumbnail to savebook
+let globalThumbnail = "";
+let globalBookIndex = 0;
+let globalBooksData = {};
+
 function SaveBook(evt)
 {
     console.dir(evt);
@@ -75,10 +81,7 @@ function SaveBook(evt)
         usrRead = true;
     }
 
-
-
-
-    let b = new Book(usrTitle, usrAuthor, usrPages, usrRead, usrDesc, usrCategory, "");
+    let b = new Book(usrTitle, usrAuthor, usrPages, usrRead, usrDesc, usrCategory, globalThumbnail);
 
 
     //Remove the form element from the library
@@ -88,18 +91,21 @@ function SaveBook(evt)
     AddToLibrary(b);
 
     addInProgress = false;
+    globalBookIndex = 0;
+    globalBooksData = {};
+    globalThumbnail = "";
 }
 
 function AddToLibrary(b){
     myLibrary.push(b);
     libraryFlex.appendChild(GenerateCard(b, false));
+    libraryFlex.lastChild.scrollIntoView();
 }
 
 function DeleteFromLibraryEvent(evt) {
 
     //console.dir(evt.currentTarget);
     DeleteFromLibrary(evt.currentTarget.dataset.id);
-
 }
 
 function DeleteFromLibrary(id) {
@@ -179,11 +185,22 @@ function AddBookInput(evt)
     if(!addInProgress)
     {
         addInProgress = true;
+        globalThumbnail = "";
         let b = new Book("", "", 0, false, "", "", "");
         libraryFlex.appendChild(GenerateCard(b, true));
-
         libraryFlex.lastChild.scrollIntoView();
     }
+}
+
+function GetCard(evt)
+{
+    let elmt = evt.target;
+    while(elmt.className != "card")
+    {
+        elmt = elmt.parentElement;
+    }
+
+    return elmt;
 }
 
 function DoSearch(evt)
@@ -198,14 +215,17 @@ function DoSearch(evt)
     }
     
     let usrTitle = elmt.getElementsByClassName("book-title-input")[0].value;
+    let usrAuthor = elmt.getElementsByClassName("author-input")[0].value;
 
-    usrTitle = usrTitle.replace(/\s+/g, '+').toLowerCase();
+    if(usrTitle == "" && usrAuthor == "") {
+        return;
+    }
 
-    console.log(usrTitle);
+    let searchInfo = usrTitle + "+" + usrAuthor;
 
+    searchInfo = searchInfo.replace(/\s+/g, '+').toLowerCase();
     let URL = 'https://www.googleapis.com/books/v1/volumes?q=';
-
-    URL += usrTitle;
+    URL += searchInfo;
 
     console.log(URL);
 
@@ -217,9 +237,34 @@ function DoSearch(evt)
             console.dir(data);
             console.log(elmt);
 
-            FillForm(data, elmt);
+            globalBooksData = data;
+            FillForm(data.items[0], elmt);
         }
     })
+}
+
+function NextBook(evt)
+{
+    if(globalBooksData != undefined)
+    {
+        if(globalBookIndex < (globalBooksData.items.length - 1))
+        {
+            globalBookIndex++;
+            FillForm(globalBooksData.items[globalBookIndex],GetCard(evt));
+        }
+    }
+}
+
+function PrevBook(evt)
+{
+    if(globalBooksData != undefined)
+    {
+        if(globalBookIndex > 0)
+        {
+            globalBookIndex--;
+            FillForm(globalBooksData.items[globalBookIndex],GetCard(evt));
+        }
+    }
 }
 
 function FillForm(data, elmt)
@@ -234,11 +279,70 @@ function FillForm(data, elmt)
     let category = elmt.getElementsByClassName("genre-input")[0];
     let pages = elmt.getElementsByClassName("pages-input")[0];
 
-    title.value = data.items[0].volumeInfo.title;
-    author.value = data.items[0].volumeInfo.authors[0];
-    desc.value = data.items[0].volumeInfo.description;
-    category.value = data.items[0].volumeInfo.categories[0];
-    pages.value = data.items[0].volumeInfo.pageCount;
+    if(data.volumeInfo.title != undefined)
+    {
+        title.value = data.volumeInfo.title;
+    }
+    else{
+        title.value = "";
+    }
+    
+    if(data.volumeInfo.authors != undefined)
+    {
+        author.value = data.volumeInfo.authors[0];
+    }
+    else{
+        author.value = "";
+    }
+    
+
+    if(data.searchInfo != undefined)
+    {
+        if(data.searchInfo.textSnippet != undefined)
+        {
+            desc.value = data.searchInfo.textSnippet;
+        }
+    }
+    else if(data.volumeInfo.description != undefined)
+    {
+        desc.value = data.volumeInfo.description;
+    }
+    else{
+        desc.value = "";
+    }
+    
+    if(data.volumeInfo.categories != undefined)
+    {
+        category.value = data.volumeInfo.categories[0];
+    }
+    else{
+        category.value = "";
+    }
+
+    if(data.volumeInfo.pageCount != undefined)
+    {
+        pages.value = data.volumeInfo.pageCount;
+    }
+    else{
+        pages.value = "";
+    }
+    
+    
+
+    if(data.volumeInfo.imageLinks != undefined)
+    {
+        if(data.volumeInfo.imageLinks.thumbnail != undefined)
+        {
+            globalThumbnail = data.volumeInfo.imageLinks.thumbnail;
+        }
+        else if(data.volumeInfo.imageLinks.smallThumbnail != undefined)
+        {
+            globalThumbnail = data.volumeInfo.imageLinks.thumbnail;
+        }
+    }
+    else{
+        globalThumbnail = "";
+    }
 }
 
 function DeleteText(evt)
@@ -289,17 +393,31 @@ function GenerateCard(b, isForm){
     {
         
 
-        if(b.thumbnail != undefined && b.thumbnail != "")
-        {
+        /* if(b.thumbnail != undefined && b.thumbnail != "")
+        { */
             hero = CreateDiv("hero");
-            hero.style.backgroundImage = `url("${b.thumbnail}")`;
+
+            if(b.thumbnail != undefined && b.thumbnail != "")
+            {
+                hero.style.backgroundImage = `url("${b.thumbnail}")`;
+            }
+            else
+            {
+                let placeholder = document.createElement("img");
+                placeholder.src = "media/book_black_24dp.svg";
+                placeholder.className = "placeholder";
+                hero.appendChild(placeholder);
+
+                hero.className = "hero hero-placeholder";
+            }
+            
             newCard.appendChild(hero);
-        }
+/*         }
         else
         {
             hero = CreateDiv("not-hero");
             newCard.appendChild(hero);
-        }
+        } */
     }
     else
     {
@@ -393,7 +511,11 @@ function GenerateCard(b, isForm){
     //Add A Search Button for books api
     if(isForm)
     {
-        bottom.appendChild(AddButton("SEARCH", b.id));
+        let d = CreateDiv("search-buttons");
+        d.appendChild(AddButton("SEARCH", b.id));
+        d.appendChild(AddButton("PREV", b.id));
+        d.appendChild(AddButton("NEXT", b.id));
+        bottom.appendChild(d);
     }
 
     let footer = CreateDiv("card-footer");
@@ -475,28 +597,49 @@ function AddButton(buttonType, newId)
                 btn.addEventListener("click", SaveBook);
                 break;
             }
-            case "ADD":
-            {
-                btn.className = "add btn";
-                btn.value  = "add";
-                img.src = "media/library_add_black_24dp.svg";
-                btnText.innerText = "Add";
-                btn.addEventListener("click", AddBookInput);
-                break;
-            }
-            case "SEARCH":
-            {
-                btn.className = "search btn";
-                btn.value  = "search";
-                img.src = "media/search_black_24dp.svg";
-                btnText.innerText = "Search";
-                btn.addEventListener("click", DoSearch);
-                break;
-            }
-}
+        case "ADD":
+        {
+            btn.className = "add btn";
+            btn.value  = "add";
+            img.src = "media/library_add_black_24dp.svg";
+            btnText.innerText = "Add";
+            btn.addEventListener("click", AddBookInput);
+            break;
+        }
+        case "SEARCH":
+        {
+            btn.className = "search btn";
+            btn.value  = "search";
+            img.src = "media/search_black_24dp.svg";
+            btnText.innerText = "Search";
+            btn.addEventListener("click", DoSearch);
+            break;
+        }
+        case "NEXT":
+        {
+            btn.className = "next nav-btn";
+            btn.value = "next";
+            img.src = "media/arrow_right_black_24dp.svg";
+            btn.addEventListener("click", NextBook);
+            break;
+        }
+        case "PREV":
+        {
+            btn.className = "prev nav-btn";
+            btn.value = "prev";
+            img.src = "media/arrow_left_black_24dp.svg";
+            btn.addEventListener("click", PrevBook);
+            break;
+        }
+    }
 
     btn.appendChild(img);
-    btn.appendChild(btnText);
+
+    if(buttonType != "NEXT" && buttonType != "PREV")
+    {
+        btn.appendChild(btnText);
+    }
+    
 
     btn.dataset.id = newId;
     returnButton.appendChild(btn);
@@ -509,19 +652,8 @@ header.appendChild(AddButton("ADD"));
 
 
 //Some hardcoded books to default into the library
-let theMartian = new Book("The Martian", "Andy Weir", 480, true, "Description", "Fiction", "media/9780804139021.jpeg");
-let anathem = new Book("Anathem", "Neal Stephenson", 1008, false, "Description", "Fiction", "media/anathem.jpg");
-
-
-//console.log(theMartian.info());
-//console.log(anathem.info());
+let theMartian = new Book("The Martian", "Andy Weir", 480, true, "Six days ago, astronaut Mark Watney became one of the first people to walk on Mars.", "Fiction", "media/9780804139021.jpeg");
+let anathem = new Book("Anathem", "Neal Stephenson", 1008, false, "Fraa Erasmas is a young avout living in the Concent of Saunt Edhar, a sanctuary for mathematicians, scientists, and philosophers", "Fiction", "media/anathem.jpg");
 
 AddToLibrary(theMartian);
 AddToLibrary(anathem);
-
-
-console.dir(myLibrary);
-
-//DeleteFromLibrary(0);
-
-console.dir(myLibrary);

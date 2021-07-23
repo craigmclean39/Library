@@ -29,19 +29,26 @@ body {
 #header {
     position: sticky;
     top: 0;
-    height: 10vh;
+    height: 50px;
     background-color: var(--footer-light-color);
+    border-bottom: solid 0.5rem var(--footer-dark-color);
 
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+}
+
+#title {
+    color: white;
+    font-size: 2rem;
+    padding: 1rem;
 }
 
 #library-flex {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .card {
@@ -64,6 +71,18 @@ body {
 
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
+}
+
+.hero-placeholder{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.placeholder {
+    height: 50%;
+    width: 50%;
+    opacity: 50%;
 }
 
 .not-hero {
@@ -190,6 +209,12 @@ body {
     font-style: italic;
 }
 
+.search-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 .card-footer {
     height: auto;
     background-color: var(--footer-dark-color);
@@ -223,6 +248,18 @@ body {
 
 }
 
+.nav-btn {
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+    margin-top: .8rem;
+    margin-bottom: .8rem;
+
+    padding: .4rem;
+    border-radius: .4rem;
+    border: none;
+
+}
+
 .unread {
     visibility: visible;
     background-color: var(--attention-color);
@@ -240,10 +277,25 @@ body {
     background-color: var(--button-light-color);
 }
 
+.search {
+    margin: 0.8rem 0.5rem 0.8rem 0.5rem;
+}
+
+.prev {
+    margin: 0.8rem 0.5rem 0.8rem 0.5rem;
+    background-color: var(--button-light-color);
+}
+
+.next {
+    margin: 0.8rem 0.5rem 0.8rem 0.5rem;
+    background-color: var(--button-light-color);
+}
+
 @media (min-width: 640px) {
 
     #library-flex {
         display: flex;
         flex-direction: row;
+        align-items: flex-start;
     }
 }

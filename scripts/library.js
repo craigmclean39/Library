@@ -653,7 +653,7 @@ header.appendChild(AddButton("ADD"));
 
 //Some hardcoded books to default into the library
 let theMartian = new Book("The Martian", "Andy Weir", 480, true, "Six days ago, astronaut Mark Watney became one of the first people to walk on Mars.", "Fiction", "media/9780804139021.jpeg");
-let anathem = new Book("Anathem", "Neal Stephenson", 1008, false, "Fraa Erasmas is a young avout living in the Concent of Saunt Edhar, a sanctuary for mathematicians, scientists, and philosophers", "Fiction", "media/anathem.jpg");
+let nestory = new Book("The Neverending Story", "Michael Ende", 444, false, "The story of a lonely boy who steps through the pages of a book into a special kingdom.", "Fiction", "media/9780525457589.jpeg");
 
 AddToLibrary(theMartian);
-AddToLibrary(anathem);
+AddToLibrary(nestory);

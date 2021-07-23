@@ -49,6 +49,11 @@ body {
     font-size: 1.5rem;
 }
 
+a:visited {
+
+    color: var(--bg-color);
+}
+
 #library-flex {
     display: flex;
     flex-direction: column;
